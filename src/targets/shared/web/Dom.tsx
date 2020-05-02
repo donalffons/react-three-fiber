@@ -51,9 +51,10 @@ function objectZIndex(el: Object3D, camera: Camera, zIndexRange: Array<number>) 
 export interface DomProps
   extends Omit<Assign<React.HTMLAttributes<HTMLDivElement>, ReactThreeFiber.Object3DNode<Group, typeof Group>>, 'ref'> {
   children: React.ReactElement
+  eps?: number
+  style?: React.CSSProperties
   prepend?: boolean
   center?: boolean
-  eps?: number
   portal?: React.MutableRefObject<HTMLElement>
   scaleFactor?: number
   zIndexRange?: Array<number>
@@ -86,6 +87,11 @@ export const Dom = React.forwardRef(
         scene.updateMatrixWorld()
         const vec = calculatePosition(group.current, camera, size)
         el.style.cssText = `position:absolute;top:0;left:0;transform:translate3d(${vec[0]}px,${vec[1]}px,0);transform-origin:0 0;`
+        if (style) {
+          for (let [key, value] of Object.entries(style as { [key: string]: React.ReactText })) {
+            ((el.style as unknown) as { [key: string]: React.ReactText })[key] = `${value}`
+          }
+        }
         if (target) {
           if (prepend) target.prepend(el)
           else target.appendChild(el)
@@ -98,18 +104,9 @@ export const Dom = React.forwardRef(
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    useEffect(
-      () =>
-        void ReactDOM.render(
-          <div
-            style={{ transform: center ? 'translate3d(-50%,-50%,0)' : 'none', ...style }}
-            className={className}
-            ref={ref}>
-            {children}
-          </div>,
-          el
-        )
-    )
+    useEffect(() => {
+      ReactDOM.render(children, el)
+    })
 
     useFrame(() => {
       if (group.current) {
