@@ -101,8 +101,7 @@ export const Dom = React.forwardRef(
           ReactDOM.unmountComponentAtNode(el)
         }
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, [camera, el, prepend, scene, size, style, target])
 
     useEffect(() => {
       ReactDOM.render(children, el)
