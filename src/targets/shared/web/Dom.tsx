@@ -53,6 +53,7 @@ export interface DomProps
   children: React.ReactElement
   eps?: number
   style?: React.CSSProperties
+  className?: string
   prepend?: boolean
   center?: boolean
   portal?: React.MutableRefObject<HTMLElement>
@@ -93,9 +94,10 @@ export const Dom = React.forwardRef(
         scene.updateMatrixWorld()
         const vec = calculatePosition(group.current, camera, size)
         el.style.cssText = `position:absolute;top:0;left:0;transform:translate3d(${vec[0]}px,${vec[1]}px,0);transform-origin:0 0;`
+        el.className = className || ""
         if (style) {
           for (let [key, value] of Object.entries(style as { [key: string]: React.ReactText })) {
-            ;((el.style as unknown) as { [key: string]: React.ReactText })[key] = `${value}`
+            ((el.style as unknown) as { [key: string]: React.ReactText })[key] = `${value}`
           }
         }
         if (target) {
@@ -107,7 +109,7 @@ export const Dom = React.forwardRef(
           ReactDOM.unmountComponentAtNode(el)
         }
       }
-    }, [camera, el, prepend, scene, size, style, target])
+    }, [camera, el, prepend, scene, size, style, target, className])
 
     useEffect(() => {
       ReactDOM.render(children, el)
