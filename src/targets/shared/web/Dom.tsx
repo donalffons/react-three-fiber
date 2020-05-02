@@ -77,7 +77,13 @@ export const Dom = React.forwardRef(
     ref: React.Ref<HTMLDivElement>
   ) => {
     const { gl, scene, camera, size } = useThree()
-    const [el] = useState(() => document.createElement('div'))
+    const [el] = useState(() => {
+      const element = document.createElement('div')
+      if(ref) {
+        (ref as React.MutableRefObject<HTMLDivElement>).current = element
+      }
+      return element
+    })
     const group = useRef<Group>(null)
     const old = useRef([0, 0])
     const target = portal?.current ?? gl.domElement.parentNode
@@ -89,7 +95,7 @@ export const Dom = React.forwardRef(
         el.style.cssText = `position:absolute;top:0;left:0;transform:translate3d(${vec[0]}px,${vec[1]}px,0);transform-origin:0 0;`
         if (style) {
           for (let [key, value] of Object.entries(style as { [key: string]: React.ReactText })) {
-            ((el.style as unknown) as { [key: string]: React.ReactText })[key] = `${value}`
+            ;((el.style as unknown) as { [key: string]: React.ReactText })[key] = `${value}`
           }
         }
         if (target) {
