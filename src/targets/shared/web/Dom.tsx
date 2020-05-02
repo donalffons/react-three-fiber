@@ -114,7 +114,8 @@ export const Dom = React.forwardRef(
         if (Math.abs(old.current[0] - vec[0]) > eps || Math.abs(old.current[1] - vec[1]) > eps) {
           el.style.display = !isObjectBehindCamera(group.current, camera) ? 'block' : 'none'
           const scale = scaleFactor === undefined ? 1 : objectScale(group.current, camera) * scaleFactor
-          el.style.transform = `translate3d(${vec[0]}px,${vec[1]}px,0) scale(${scale})`
+          el.style.transform =
+            `translate3d(${vec[0]}px,${vec[1]}px,0) scale(${scale})` + (center ? ' translate3d(-50%,-50%,0)' : '')
           el.style.zIndex = `${objectZIndex(group.current, camera, zIndexRange)}`
         }
         old.current = vec
